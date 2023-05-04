@@ -7,7 +7,6 @@ const parseInt = std.fmt.parseInt;
 fn encode_nes(addr: []const u8, data: []const u8, cmp: []const u8) !u32 {
     const address_u16 = try parseInt(u16, addr, 0);
     const data_u16 = try parseInt(u16, data, 0);
-
     var compare_u16: u16 = undefined;
     if (cmp.len > 0) compare_u16 = try parseInt(u16, cmp, 0);
 
