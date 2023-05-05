@@ -17,9 +17,7 @@ fn encode_nes(addr: []const u8, data: []const u8, cmp: []const u8) !u32 {
     gg <<= 4;
     gg |= (address_u16 & 0x70) >> 4;
 
-    if (cmp.len > 0) {
-        gg |= 0x8;
-    }
+    if (cmp.len > 0) gg |= 0x8;
 
     gg <<= 4;
     gg |= (address_u16 & 0x8) | ((address_u16 & 0x7000) >> 12);
