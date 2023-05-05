@@ -33,6 +33,7 @@ The resulting code will be: <b>NYXEIOXK</b> <br/>
 When entered in the Game Genie, will instruct the Game Genie, to change the data byte that is on 0x812d of the inserted cardridge to be changed into 0xff <b>only</b> when the data on the cardridge located on address 812b, contains 0xca
 
 ## Building nes-game-genie
+<b>Notice do use Zig 0.11.1 at lhe least, we noticed 0.10.1 doesn't print all the characters for some reason</b>
 There is a build.zig file which is akin to the Makefile in C, although zig comfortably creates the scaffolding for you after creating a project with zig init <project name> therefore building the project is as simple as running
 
 ```bash
