@@ -7,43 +7,37 @@ const parseInt = std.fmt.parseInt;
 fn encode_nes(addr: []const u8, data: []const u8, cmp: []const u8) !u32 {
     const address_u16 = try parseInt(u16, addr, 0);
     const data_u16 = try parseInt(u16, data, 0);
+
     var compare_u16: u16 = undefined;
-    if (cmp.len > 0) compare_u16 = try parseInt(u16, cmp, 0);
+    if (cmp.len > 0) {
+        compare_u16 = try parseInt(u16, cmp, 0);
+    }
 
     var gg: u32 = ((data_u16 & 0x80) >> 4) | (data_u16 & 0x7);
-    var temp: u32 = ((address_u16 & 0x80) >> 4) | ((data_u16 & 0x70) >> 4);
     gg <<= 4;
-    gg |= temp;
-
-    temp = (address_u16 & 0x70) >> 4;
-    if (cmp.len > 0) temp |= 0x8;
+    gg |= ((address_u16 & 0x80) >> 4) | ((data_u16 & 0x70) >> 4);
     gg <<= 4;
-    gg |= temp;
-
-    temp = (address_u16 & 0x8) | ((address_u16 & 0x7000) >> 12);
-    gg <<= 4;
-    gg |= temp;
-
-    temp = ((address_u16 & 0x800) >> 8) | (address_u16 & 0x7);
-    gg <<= 4;
-    gg |= temp;
+    gg |= (address_u16 & 0x70) >> 4;
 
     if (cmp.len > 0) {
-        temp = (compare_u16 & 0x8) | ((address_u16 & 0x700) >> 8);
-        gg <<= 4;
-        gg |= temp;
+        gg |= 0x8;
+    }
 
-        temp = ((compare_u16 & 0x80) >> 4) | (compare_u16 & 0x7);
-        gg <<= 4;
-        gg |= temp;
+    gg <<= 4;
+    gg |= (address_u16 & 0x8) | ((address_u16 & 0x7000) >> 12);
+    gg <<= 4;
+    gg |= ((address_u16 & 0x800) >> 8) | (address_u16 & 0x7);
 
-        temp = (data_u16 & 0x8) | ((compare_u16 & 0x70) >> 4);
+    if (cmp.len > 0) {
         gg <<= 4;
-        gg |= temp;
+        gg |= (compare_u16 & 0x8) | ((address_u16 & 0x700) >> 8);
+        gg <<= 4;
+        gg |= ((compare_u16 & 0x80) >> 4) | (compare_u16 & 0x7);
+        gg <<= 4;
+        gg |= (data_u16 & 0x8) | ((compare_u16 & 0x70) >> 4);
     } else {
-        temp = (data_u16 & 0x8) | ((address_u16 & 0x700) >> 8);
         gg <<= 4;
-        gg |= temp;
+        gg |= (data_u16 & 0x8) | ((address_u16 & 0x700) >> 8);
     }
 
     return gg;
