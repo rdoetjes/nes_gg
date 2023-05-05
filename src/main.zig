@@ -39,10 +39,11 @@ fn encode_nes(addr: []const u8, data: []const u8, cmp: []const u8) !u32 {
     return gg;
 }
 
-fn print_gg_nes(encoded: u32, eight: bool) !void {
+pub fn print_gg_nes(encoded: u32, is_eight: bool) !void {
     const CHR = [_]u8{ 'A', 'P', 'Z', 'L', 'G', 'I', 'T', 'Y', 'E', 'O', 'X', 'U', 'K', 'S', 'V', 'N' };
     var i: u8 = undefined;
-    if (eight) i = 7 else i = 5;
+
+    if (is_eight) i = 7 else i = 5;
     while (i >= 0) : (i -= 1) {
         try stdout.print("{c}", .{CHR[(encoded >> (@truncate(u5, i) * 4) & 0xf)]});
         if (i == 0) break;
@@ -50,28 +51,32 @@ fn print_gg_nes(encoded: u32, eight: bool) !void {
     try stdout.print("\n", .{});
 }
 
-fn gg_nes(address: []const u8, data: []const u8, cmp: []const u8) !void {
+pub fn gg_nes(addr: []const u8, data: []const u8, cmp: []const u8) !void {
     var encoded: u32 = undefined;
-    var is_eight: bool = undefined;
 
-    if (cmp.len == 0) is_eight = false else is_eight = true;
+    var is_eight: bool = undefined;
+    if (cmp.len > 0) is_eight = true else is_eight = false;
 
     if (!is_eight) {
-        encoded = encode_nes(address, data, "") catch |err| {
-            try stdout.print("error: {}\n Input needs to be respectively, 0x[0000-ffff], 0x[00-ff]\n", .{err});
+        encoded = encode_nes(addr, data, "") catch |err| {
+            try stdout.print("error: {}\n   Input needs to be  in range of 0x[8000-ffff] 0x[00-ff]\n", .{err});
             return;
         };
     } else {
-        encoded = encode_nes(address, data, cmp) catch |err| {
-            try stdout.print("error: {}\n Input needs to be respectively, 0x[0000-ffff], 0x[00-ff] 0x[00-ff]\n", .{err});
+        encoded = encode_nes(addr, data, cmp) catch |err| {
+            try stdout.print("error: {}\n   Input needs to be  in range of 0x[8000-ffff] 0x[00-ff] 0x[00-ff]\n", .{err});
             return;
         };
     }
 
     print_gg_nes(encoded, is_eight) catch |err| {
-        try stdout.print("error: {}\n whilst trying to print GG code", .{err});
+        try stdout.print("error: {}\n whilst trying to pring GG code\n", .{err});
         return;
     };
+}
+
+fn is_hex_notation(value: []const u8) bool {
+    return std.mem.startsWith(u8, value, "0x");
 }
 
 pub fn main() !void {
@@ -79,11 +84,22 @@ pub fn main() !void {
     defer std.process.argsFree(gpa, args);
 
     if (args.len < 3 or args.len > 4) {
-        try stdout.print("Usage: {s} <0xaddress> <0xdata> [0xcmp]\nf.i. {s} 0x812f 0xbd\n", .{ args[0], args[0] });
+        try stdout.print("Usage: {s} <0xaddress> <0xdata> [0xcompare]\nf.i (6 char code): {s} 0xf12d 0xdd\nf.i (8 char code) {s} 0xf12d 0xdd 0xf0\n", .{ args[0], args[0], args[0] });
+        return;
+    }
+
+    if (!is_hex_notation(args[1]) or !is_hex_notation(args[2])) {
+        try stdout.print("Address and data value needs to be in hex format and should start with 0x\n", .{});
         return;
     }
 
     if (args.len == 3) try gg_nes(args[1], args[2], "");
 
-    if (args.len == 4) try gg_nes(args[1], args[2], args[3]);
+    if (args.len == 4) {
+        if (!is_hex_notation(args[3])) {
+            try stdout.print("Compare value needs to be in hex format and should start with 0x\n", .{});
+            return;
+        }
+        try gg_nes(args[1], args[2], args[3]);
+    }
 }
