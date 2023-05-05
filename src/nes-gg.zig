@@ -88,7 +88,7 @@ pub fn main() !void {
     const args = try std.process.argsAlloc(gpa);
     defer std.process.argsFree(gpa, args);
 
-    if (args.len < 3 and args.len > 4) {
+    if (args.len < 3 or args.len > 4) {
         try stdout.print("Usage: {s} <0xaddress> <0xdata> [0xcmp]\nf.i. {s} 0x812f 0xbd\n", .{ args[0], args[0] });
         return;
     }
