@@ -9,9 +9,7 @@ fn encode_nes(addr: []const u8, data: []const u8, cmp: []const u8) !u32 {
     const data_u16 = try parseInt(u16, data, 0);
 
     var compare_u16: u16 = undefined;
-    if (cmp.len > 0) {
-        compare_u16 = try parseInt(u16, cmp, 0);
-    }
+    if (cmp.len > 0) compare_u16 = try parseInt(u16, cmp, 0);
 
     var gg: u32 = ((data_u16 & 0x80) >> 4) | (data_u16 & 0x7);
     gg <<= 4;
