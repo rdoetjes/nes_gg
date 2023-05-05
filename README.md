@@ -20,7 +20,7 @@ The application takes 2 or 3 arguments, creating respectively a 6 character or 8
 ./nes-game-genie 0x812d 0xff
 ```
 
-The resulting code will be: NYZEIO <br/>
+The resulting code will be: <b>NYZEIO</b> <br/>
 When entered in the Game Genie, will instruct the Game Genie, to change the data byte that is on 0x812d of the inserted cardridge to be changed into 0xff, irrespective what is there.
 <p>
 <b>8 char code</b>
@@ -29,5 +29,5 @@ When entered in the Game Genie, will instruct the Game Genie, to change the data
 ./nes-game-genie 0x812d 0xff 0xca
 ```
 
-The resulting code willeb: NYXEIOXK <br/>
+The resulting code will be: <b>NYXEIOXK</b> <br/>
 When entered in the Game Genie, will instruct the Game Genie, to change the data byte that is on 0x812d of the inserted cardridge to be changed into 0xff <b>only</b> when the data on the cardridge located on address 812b, contains 0xca
