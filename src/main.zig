@@ -46,8 +46,10 @@ pub fn print_gg_nes(encoded: u32, is_eight: bool) !void {
     if (is_eight) i = 7 else i = 5;
     while (i > 0) : (i -= 1) {
         try stdout.print("{c}", .{CHR[(encoded >> (@truncate(u5, i) * 4) & 0xf)]});
+    } else {
+        try stdout.print("{c}", .{CHR[(encoded >> (@truncate(u5, i) * 4) & 0xf)]});
+        try stdout.print("\n", .{});
     }
-    try stdout.print("\n", .{});
 }
 
 pub fn gg_nes(addr: []const u8, data: []const u8, cmp: []const u8) !void {
