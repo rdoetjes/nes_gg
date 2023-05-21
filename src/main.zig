@@ -44,9 +44,8 @@ pub fn print_gg_nes(encoded: u32, is_eight: bool) !void {
     var i: u8 = undefined;
 
     if (is_eight) i = 7 else i = 5;
-    while (i >= 0) : (i -= 1) {
+    while (i > 0) : (i -= 1) {
         try stdout.print("{c}", .{CHR[(encoded >> (@truncate(u5, i) * 4) & 0xf)]});
-        if (i == 0) break;
     }
     try stdout.print("\n", .{});
 }
