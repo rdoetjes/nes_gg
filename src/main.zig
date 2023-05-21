@@ -4,6 +4,7 @@ const gpa = general_purpose_allocator.allocator();
 const stdout = std.io.getStdOut().writer();
 const parseInt = std.fmt.parseInt;
 
+//this is unique to the NES!
 fn encode_nes(addr: []const u8, data: []const u8, cmp: []const u8) !u32 {
     const address_u16 = try parseInt(u16, addr, 0);
     const data_u16 = try parseInt(u16, data, 0);
@@ -39,6 +40,8 @@ fn encode_nes(addr: []const u8, data: []const u8, cmp: []const u8) !u32 {
     return gg;
 }
 
+//this char array is unique to the nes. If you would want to implement this foranother platform
+//you should pass in the const array of chars as an argument, as the print logic remains the same
 pub fn print_gg_nes(encoded: u32, is_eight: bool) !void {
     const CHR = [_]u8{ 'A', 'P', 'Z', 'L', 'G', 'I', 'T', 'Y', 'E', 'O', 'X', 'U', 'K', 'S', 'V', 'N' };
     var i: u8 = undefined;
@@ -52,6 +55,7 @@ pub fn print_gg_nes(encoded: u32, is_eight: bool) !void {
     }
 }
 
+//this is the wrapper function that calls the encoding function and the print function on the encoding functio return value
 pub fn gg_nes(addr: []const u8, data: []const u8, cmp: []const u8) !void {
     var encoded: u32 = undefined;
 
