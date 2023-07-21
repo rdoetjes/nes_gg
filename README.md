@@ -32,6 +32,24 @@ When entered in the Game Genie, will instruct the Game Genie, to change the data
 The resulting code will be: <b>NYXEIOXK</b> <br/>
 When entered in the Game Genie, will instruct the Game Genie, to change the data byte that is on 0x812d of the inserted cardridge to be changed into 0xff <b>only</b> when the data on the cardridge located on address 812b, contains 0xca
 
+## Change introduced afer video
+A viewer noticed that the code did not compile on zig 0.11, truncate in 0.11 expects one argument and it doesn't want to cast to a lower value the way we do in the video. So I just changed the code to already use a u5 in the print routine. This works and arguably is also cleaner as we avoid a cast/truncate.
+
+```zig
+pub fn print_gg_nes(encoded: u32, is_eight: bool) !void {
+    const CHR = [_]u8{ 'A', 'P', 'Z', 'L', 'G', 'I', 'T', 'Y', 'E', 'O', 'X', 'U', 'K', 'S', 'V', 'N' };
+    var i: u5 = undefined;
+
+    if (is_eight) i = 7 else i = 5;
+    while (i > 0) : (i -= 1) {
+        try stdout.print("{c}", .{CHR[(encoded >> i * 4 & 0xf)]});
+    } else {
+        try stdout.print("{c}", .{CHR[(encoded >> i * 4 & 0xf)]});
+        try stdout.print("\n", .{});
+    }
+}
+```
+
 ## Building nes-game-genie
 There is a build.zig file which is akin to the Makefile in C, although zig comfortably creates the scaffolding for you after creating a project with zig init <project name> therefore building the project is as simple as running
 
