@@ -44,13 +44,13 @@ fn encode_nes(addr: []const u8, data: []const u8, cmp: []const u8) !u32 {
 //you should pass in the const array of chars as an argument, as the print logic remains the same
 pub fn print_gg_nes(encoded: u32, is_eight: bool) !void {
     const CHR = [_]u8{ 'A', 'P', 'Z', 'L', 'G', 'I', 'T', 'Y', 'E', 'O', 'X', 'U', 'K', 'S', 'V', 'N' };
-    var i: u8 = undefined;
+    var i: u5 = undefined;
 
     if (is_eight) i = 7 else i = 5;
     while (i > 0) : (i -= 1) {
-        try stdout.print("{c}", .{CHR[(encoded >> (@truncate(u5, i) * 4) & 0xf)]});
+        try stdout.print("{c}", .{CHR[(encoded >> i * 4 & 0xf)]});
     } else {
-        try stdout.print("{c}", .{CHR[(encoded >> (@truncate(u5, i) * 4) & 0xf)]});
+        try stdout.print("{c}", .{CHR[(encoded >> i * 4 & 0xf)]});
         try stdout.print("\n", .{});
     }
 }
